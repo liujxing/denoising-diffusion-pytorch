@@ -379,6 +379,10 @@ class Unet(nn.Module):
 
 
 def extract(a, t, x_shape):
+    """
+    For a given minibatch, this function is used to extract the value at corresponding time step index
+    For 1D input a, it is equivalent to a[t] where t is an array with size of minibatch
+    """
     b, *_ = t.shape
     out = a.gather(-1, t)
     return out.reshape(b, *((1,) * (len(x_shape) - 1)))
@@ -402,6 +406,7 @@ def cosine_beta_schedule(timesteps, s=0.008):
     alphas_cumprod = alphas_cumprod / alphas_cumprod[0]
     betas = 1 - (alphas_cumprod[1:] / alphas_cumprod[:-1])
     return torch.clip(betas, 0, 0.999)
+
 
 class GaussianDiffusion(nn.Module):
     def __init__(
